@@ -1,0 +1,110 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+
+#define MaxSize 10
+typedef int ElemType;
+typedef struct Node{
+	ElemType data;
+	struct Node *next;
+}LinkNode;
+typedef struct{
+	LinkNode *front;
+	LinkNode *rear;
+}LinkQueue;
+
+
+//初始化  
+void init(LinkQueue *q){		//带头节点
+	q->front=q->rear =(LinkNode *)malloc(sizeof(LinkNode));
+	q->front ->next=NULL;
+}
+void init2(LinkQueue *q){		//不带头节点 
+	q->front=q->rear=NULL;
+} 
+
+//判空
+bool empty(LinkQueue q){
+	if(q.front ==q.rear)return true;
+	else return false;//或头节点指向NULL 
+} 
+bool empty2(LinkQueue q){
+	if(q.front ==NULL)return true;
+	else return false;
+}
+
+//入队
+void enqueue(LinkQueue *q,ElemType x){	//带头节点 
+	LinkNode *s=(LinkNode *)malloc(sizeof(LinkNode));
+	s->data =x;
+	s->next =NULL;
+	q->rear ->next=s;
+	q->rear =s;
+}
+void enqueue2(LinkQueue *q,ElemType x){
+	LinkNode *s=(LinkNode *)malloc(sizeof(LinkNode));
+	s->data =x;
+	s->next =NULL;
+	if (q->front ==NULL){	//空队列 
+		q->front =s;
+		q->rear =s;
+	}else{
+		q->rear ->next=s;
+		q->rear =s;
+	}
+}
+
+
+//出队并返回删除值 
+bool dequeue(LinkQueue *q,ElemType *x){
+	if(q->front ==q->rear)return false;
+	LinkNode *p=q->front->next;
+	*x=p->data; 
+	q->front ->next=p->next;
+	if(q->rear ==p)q->rear=q->front ;//如果删除最后一个元素，要调整尾指针位置 
+	free(p);
+	return true;
+}
+bool dequeue2(LinkQueue *q,ElemType *x){
+	if(q->front ==NULL)return false;//空队列
+	LinkNode *s=q->front;
+	*x=s->data;
+	q->front =s ->next;
+	if(q->rear==s)q->rear=NULL;	//只有一个元素的队列 
+	free(s);
+	return true;
+}
+
+//打印
+void printqueue(LinkQueue q){
+	q.front =q.front ->next;
+	while (q.front !=NULL){
+		printf("%d ",q.front ->data);
+		q.front =q.front ->next;
+	}
+}
+void printqueue2(LinkQueue q){
+	while(q.front !=NULL){
+		printf("%d ",q.front->data );
+		q.front =q.front ->next;
+	}
+}
+
+ 
+int main (){
+	LinkQueue q;
+	init2(&q);
+	enqueue2(&q,1);
+	enqueue2(&q,22);
+	enqueue2(&q,333);
+	printqueue2(q);
+	printf("\n");
+	
+	int x;
+	dequeue2(&q,&x);
+	enqueue2(&q,4444);
+	printqueue2(q);
+	return 0;
+}
